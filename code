@@ -1,0 +1,70 @@
+// Pin definitions for L298N Motor Driver
+const int in1 = 8;  // IN1 pin on L298N
+const int in2 = 9;  // IN2 pin on L298N
+const int in3 = 10; // IN3 pin on L298N
+const int in4 = 11; // IN4 pin on L298N
+const int enA = 5;  // Enable pin for motor A
+const int enB = 6;  // Enable pin for motor B
+
+// Bluetooth communication pin (RX and TX connected to Serial)
+char receivedData;
+
+void setup() {
+  // Initialize motor driver pins
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(in3, OUTPUT);
+  pinMode(in4, OUTPUT);
+  pinMode(enA, OUTPUT);
+  pinMode(enB, OUTPUT);
+
+  // Set initial speed of motors
+  analogWrite(enA, 200); // PWM speed control for motor A
+  analogWrite(enB, 200); // PWM speed control for motor B
+
+  // Initialize Serial communication for Bluetooth
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Check if Bluetooth data is available
+  if (Serial.available() > 0) {
+    receivedData = Serial.read();
+
+    // Forward command
+    if (receivedData == 'F') {
+      digitalWrite(in1, HIGH);
+      digitalWrite(in2, LOW);
+      digitalWrite(in3, HIGH);
+      digitalWrite(in4, LOW);
+    }
+    // Backward command
+    else if (receivedData == 'B') {
+      digitalWrite(in1, LOW);
+      digitalWrite(in2, HIGH);
+      digitalWrite(in3, LOW);
+      digitalWrite(in4, HIGH);
+    }
+    // Stop command
+    else if (receivedData == 'S') {
+      digitalWrite(in1, LOW);
+      digitalWrite(in2, LOW);
+      digitalWrite(in3, LOW);
+      digitalWrite(in4, LOW);
+    }
+    // Turn Left command
+    else if (receivedData == 'L') {
+      digitalWrite(in1, LOW);
+      digitalWrite(in2, HIGH);
+      digitalWrite(in3, HIGH);
+      digitalWrite(in4, LOW);
+    }
+    // Turn Right command
+    else if (receivedData == 'R') {
+      digitalWrite(in1, HIGH);
+      digitalWrite(in2, LOW);
+      digitalWrite(in3, LOW);
+      digitalWrite(in4, HIGH);
+    }
+  }
+}
